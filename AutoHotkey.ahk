@@ -23,6 +23,7 @@
 ;return
 
 
+
 ; Note: From now on whenever you run AutoHotkey directly, this script
 ; will be loaded.  So feel free to customize it to suit your needs.
 
@@ -33,19 +34,128 @@
 
 CapsLock::WinMinimize,A
 +CapsLock::CapsLock
-F12::Send,{Volume_Mute}
-F11::Send,{Volume_Up 5}
-F10::Send,{Volume_Down 5}
-^+F12::F12
-^+F11::F11
-^+F10::F10
+; $ causes the F12 press not to be sent also
+$F12::SendInput,{Volume_Mute}
+$F11::SendInput,{Volume_Up 5}
+$F10::SendInput,{Volume_Down 5}
+$F9::SendInput,{Media_Next}
+;$!F9::SendInput,{Media_Prev}
+$^!F9::SendInput,{Media_Play_Pause}
+^+F12:: SendInput, {F12}
+^+F11:: SendInput, {F11}
+^+F10:: SendInput, {F10}
+^+F9:: SendInput, {F9}
 ^+!o::
 ;~ WinActivate Inbox ahk_class rctrl_renwnd32
 ; get the number of monitors and store it in MonitorCount
 SysGet, MonitorCount, MonitorCount
-sysget, MonitorPrimary, MonitorPrimary
+SysGet, MonitorPrimary, MonitorPrimary
 SysGet, PrimaryMonWorkArea, MonitorWorkArea, %MonitorPrimary%
-if (MonitorCount = 2)
+
+
+
+;~ if (MonitorCount >= 2)
+;~ {
+	;~ if (MonitorPrimary = 1)
+	;~ {
+		;~ global SecondMonitor := 2
+	;~ } else {
+		;~ global SecondMonitor := 1
+	;~ }
+;~ }
+
+global SecondMonitor := 2
+global ThirdMonitor := 3
+
+SysGet, SecondMonWorkArea, MonitorWorkArea, %SecondMonitor%		
+SysGet, ThirdMonWorkArea, MonitorWorkArea, %ThirdMonitor%	
+;MsgBox, Left: %ThirdMonWorkAreaLeft% -- Top: %ThirdMonWorkAreaTop% -- Right: %ThirdMonWorkAreaRight% -- Bottom %ThirdMonWorkAreaBottom%.
+CommunicatorWidth = 402
+TaskBarWidth = %PrimaryMonWorkAreaLeft%
+;Debugging
+;Difference := (SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
+;ListVars
+
+;IfWinNotExist, Inbox - Microsoft Outlook ahk_class rctrl_renwnd32 
+IfWinNotExist, Inbox ahk_class rctrl_renwnd32
+{
+	Run, "C:\Program Files\Microsoft Office 15\root\office15\OUTLOOK.EXE"
+	WinWait, Inbox ahk_class rctrl_renwnd32	
+}
+WinActivate, Inbox ahk_class rctrl_renwnd32
+if (MonitorCount = 1){
+	WinMove, Inbox ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft)*5/6,  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+} else if (MonitorCount = 2){
+	WinMove, Inbox ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft)*5/6,  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+} else if (MonitorCount = 3){
+	WinMove, Inbox ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft)*5/6,  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+}
+
+IfWinNotExist, Archive ahk_class rctrl_renwnd32
+{
+	Run, "C:\Program Files\Microsoft Office 15\root\office15\OUTLOOK.EXE"  /select Outlook:\\NewArchive\Archive
+	WinWait, Archive ahk_class rctrl_renwnd32
+}
+WinActivate, Archive ahk_class rctrl_renwnd32
+
+if (MonitorCount = 1) {
+	WinMove, Archive ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft)*5/6,  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+} else if (MonitorCount = 2){
+	WinMove, Archive ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft)*5/6,  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+} else if (MonitorCount = 3){
+	WinMove, Archive ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft)*5/6,  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+}
+
+IfWinNotExist, Calendar ahk_class rctrl_renwnd32
+{
+	Run, "C:\Program Files\Microsoft Office 15\root\office15\OUTLOOK.EXE"  /select outlook:calendar	
+	WinWait, Calendar ahk_class rctrl_renwnd32
+}
+WinActivate, Calendar ahk_class rctrl_renwnd32
+
+if (MonitorCount = 1) {
+	WinMove, Calendar ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft),  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+} else if (MonitorCount = 2){
+	WinMove, Calendar ahk_class rctrl_renwnd32, , (SecondMonWorkAreaLeft + CommunicatorWidth), %SecondMonWorkAreaTop%, Abs(SecondMonWorkAreaRight - SecondMonWorkAreaLeft - CommunicatorWidth), Abs(SecondMonWorkAreaBottom - SecondMonWorkAreaTop) 
+} else if (MonitorCount = 3){
+	WinMove, Calendar ahk_class rctrl_renwnd32, , %ThirdMonWorkAreaLeft%, %ThirdMonWorkAreaTop%, Abs(ThirdMonWorkAreaRight - ThirdMonWorkAreaLeft)*5/6,  Abs(ThirdMonWorkAreaBottom - ThirdMonWorkAreaTop)
+}
+;Outlook Tasks window
+;~ IfWinNotExist, Tasks ahk_class rctrl_renwnd32
+;~ {
+	;~ Run, "C:\Program Files\Microsoft Office 15\root\office15\OUTLOOK.EXE"  /select outlook:tasks	
+	;~ WinWait, Tasks ahk_class rctrl_renwnd32
+;~ }
+;~ WinActivate, Tasks ahk_class rctrl_renwnd32
+
+;~ if (MonitorCount = 1) {
+	;~ WinMove, Tasks ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft),  Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+;~ } else if (MonitorCount = 2){
+	;~ WinMove, Tasks ahk_class rctrl_renwnd32, , (SecondMonWorkAreaLeft + CommunicatorWidth), %SecondMonWorkAreaTop%, Abs(SecondMonWorkAreaRight - SecondMonWorkAreaLeft - CommunicatorWidth), Abs(SecondMonWorkAreaBottom - SecondMonWorkAreaTop) 
+;~ } else if (MonitorCount = 3){
+	;~ WinMove, Tasks ahk_class rctrl_renwnd32, , (SecondMonWorkAreaLeft + CommunicatorWidth), %SecondMonWorkAreaTop%, Abs(SecondMonWorkAreaRight - SecondMonWorkAreaLeft - CommunicatorWidth), Abs(SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
+;~ }
+
+IfWinNotExist, Skype for Business  ahk_class CommunicatorMainWindowClass
+{
+	Run, lync
+	WinWait, Skype for Business  ahk_class CommunicatorMainWindowClass
+}
+WinActivate, Skype for Business  ahk_class CommunicatorMainWindowClass
+if (MonitorCount >= 2){
+	WinMove, Skype for Business  ahk_class CommunicatorMainWindowClass, , %SecondMonWorkAreaLeft%, %SecondMonWorkAreaTop%, %CommunicatorWidth%, Abs(SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
+} else {
+	WinMove, Skype for Business  ahk_class CommunicatorMainWindowClass, , (PrimaryMonWorkAreaRight - CommunicatorWidth), %PrimaryMonWorkAreaTop%, %CommunicatorWidth%, Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+}
+
+WinActivate, Inbox ahk_class rctrl_renwnd32
+return
+
+^+!g::
+SysGet, MonitorCount, MonitorCount
+SysGet, MonitorPrimary, MonitorPrimary
+SysGet, PrimaryMonWorkArea, MonitorWorkArea, %MonitorPrimary%
+if (MonitorCount >= 2)
 {
 	if (MonitorPrimary = 1)
 	{
@@ -61,61 +171,74 @@ TaskBarWidth = %PrimaryMonWorkAreaLeft%
 ;Difference := (SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
 ;ListVars
 
-IfWinNotExist, Inbox - Microsoft Outlook ahk_class rctrl_renwnd32
-{
-	Run, "c:\Program Files (x86)\Microsoft Office\Office12\Outlook.exe"
-	WinWait, Inbox ahk_class rctrl_renwnd32	
-}
-WinActivate, Inbox ahk_class rctrl_renwnd32
-WinMove, Inbox ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, (PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft),  (PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
-
-IfWinNotExist, Archive ahk_class rctrl_renwnd32
-{
-	Run, "c:\Program Files (x86)\Microsoft Office\Office12\Outlook.exe"  /select Outlook:\\NewArchive\Archive
-	WinWait, Archive ahk_class rctrl_renwnd32
-}
-WinActivate, Archive ahk_class rctrl_renwnd32
-WinMove, Archive ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, (PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft),  (PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
-
-IfWinNotExist, Calendar - Microsoft Outlook ahk_class rctrl_renwnd32
-{
-	Run, "c:\Program Files (x86)\Microsoft Office\Office12\Outlook.exe"  /select outlook:calendar	
-	WinWait, Calendar ahk_class rctrl_renwnd32
-}
-WinActivate, Calendar ahk_class rctrl_renwnd32
-
-if (MonitorCount = 2){
-	WinMove, Calendar ahk_class rctrl_renwnd32, , (SecondMonWorkAreaLeft + CommunicatorWidth), %SecondMonWorkAreaTop%, (SecondMonWorkAreaRight - SecondMonWorkAreaLeft - CommunicatorWidth), (SecondMonWorkAreaBottom - SecondMonWorkAreaTop) 
-} else {
-	WinMove, Calendar ahk_class rctrl_renwnd32, , TaskBarWidth, %PrimaryMonWorkAreaTop%, (PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft),  (PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
-}
-
-
-IfWinNotExist, Microsoft Lync ahk_class CommunicatorMainWindowClass
-{
-	Run, Communicator
-	WinWait, Microsoft Lync ahk_class CommunicatorMainWindowClass
-}
-WinActivate, Microsoft Lync ahk_class CommunicatorMainWindowClass
-if (MonitorCount = 2){
-	WinMove, Microsoft Lync ahk_class CommunicatorMainWindowClass, , %SecondMonWorkAreaLeft%, %SecondMonWorkAreaTop%, %CommunicatorWidth%, (SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
-} else {
-	WinMove, Microsoft Lync ahk_class CommunicatorMainWindowClass, , (PrimaryMonWorkAreaRight - CommunicatorWidth), %PrimaryMonWorkAreaTop%, %CommunicatorWidth%, (PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
-}
-
-WinActivate, Inbox ahk_class rctrl_renwnd32
-return
-
-^+!g::
-SysGet, MonitorCount, MonitorCount
 SetTitleMatchMode, 2
-WinActivate, ahk_class Chrome_WidgetWin_0
-;MsgBox %MonitorCount%
-if (MonitorCount = 2){
-	WinMove, ahk_class Chrome_WidgetWin_0, , (SecondMonWorkAreaLeft + CommunicatorWidth), %SecondMonWorkAreaTop%, (SecondMonWorkAreaRight - SecondMonWorkAreaLeft), (SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
+WinActivate, ahk_class Chrome_WidgetWin_1
+if (MonitorCount >= 2){
+	WinMove, ahk_class Chrome_WidgetWin_1, , (SecondMonWorkAreaLeft + CommunicatorWidth), %SecondMonWorkAreaTop%, Abs(SecondMonWorkAreaRight - SecondMonWorkAreaLeft) - CommunicatorWidth, Abs(SecondMonWorkAreaBottom - SecondMonWorkAreaTop)
 } else {
-	WinMove, ahk_class Chrome_WidgetWin_0, , TaskBarWidth, %PrimaryMonWorkAreaTop%, (PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft), (PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
+	WinMove, ahk_class Chrome_WidgetWin_1, , TaskBarWidth, %PrimaryMonWorkAreaTop%, Abs(PrimaryMonWorkAreaRight - PrimaryMonWorkAreaLeft), Abs(PrimaryMonWorkAreaBottom - PrimaryMonWorkAreaTop)
 }
 
 SetTitleMatchMode, 1
 return
+
+;Hotstrings (text expansion)
+:*:gmh::george.murga@honeywell.com
+:*:gmg::george.murga@gmail.com
+::urlenc::
+	oldClip := Clipboard
+	Clipboard := MakeNiceURL()
+    SendInput, ^v
+	ClipWait
+	Clipboard := oldClip
+return
+::urldec::
+	oldClip := Clipboard
+	Clipboard := MakeTitleFromNiceURL()
+    SendInput, ^v
+	ClipWait
+	Clipboard := oldClip
+return
+
+MakeNiceURL()
+{
+	NiceUrl := Trim(Clipboard)
+	While InStr(NiceUrl, "  ") <> 0
+	{
+		StringReplace, NiceUrl, NiceUrl, %A_Space%%A_Space%, %A_Space%, All
+	}
+	StringReplace, NiceUrl, NiceUrl, :, , All
+	StringReplace, NiceUrl, NiceUrl, `;, , All
+	StringReplace, NiceUrl, NiceUrl, `,, , All
+	StringReplace, NiceUrl, NiceUrl, !, , All
+	StringReplace, NiceUrl, NiceUrl, ., , All
+	StringReplace, NiceUrl, NiceUrl, /, -, All
+	StringReplace, NiceUrl, NiceUrl, \, -, All
+	StringReplace, NiceUrl, NiceUrl, #, , All
+	StringReplace, NiceUrl, NiceUrl, (, , All
+	StringReplace, NiceUrl, NiceUrl, ), , All
+	StringReplace, NiceUrl, NiceUrl, [, , All
+	StringReplace, NiceUrl, NiceUrl, ], , All
+	StringReplace, NiceUrl, NiceUrl, `{, , All
+	StringReplace, NiceUrl, NiceUrl, `}, , All
+	StringReplace, NiceUrl, NiceUrl, ', , All
+	StringReplace, NiceUrl, NiceUrl, `", , All
+	StringReplace, NiceUrl, NiceUrl,  %A_Space%, -, All
+	While InStr(NiceUrl, "--") <> 0
+	{
+		StringReplace, NiceUrl, NiceUrl, --, -, All
+	}
+	return NiceUrl
+}
+
+MakeTitleFromNiceURL()
+{
+	NiceUrl := Trim(Clipboard)
+	StringReplace, NiceUrl, NiceUrl,  -, %A_Space%, All
+	While InStr(NiceUrl, "  ") <> 0
+	{
+		StringReplace, NiceUrl, NiceUrl, %A_Space%%A_Space%, %A_Space%, All
+	}
+	StringUpper, NiceUrl, NiceUrl, T
+	return NiceUrl
+}
