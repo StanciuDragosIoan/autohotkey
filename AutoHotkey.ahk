@@ -186,8 +186,10 @@ return
 :*:gmh::george.murga@honeywell.com
 :*:gmg::george.murga@gmail.com
 :*:urlenc::
+	ClipWait
 	oldClip := Clipboard
 	Clipboard := MakeNiceURL()
+	ClipWait
     SendInput, ^v
 	ClipWait
 	Clipboard = %oldClip%
@@ -196,6 +198,7 @@ return
 :*:urldec::
 	oldClip := Clipboard
 	Clipboard := MakeTitleFromNiceURL()
+	ClipWait
     SendInput, ^v
 	ClipWait
 	Clipboard = %oldClip%
