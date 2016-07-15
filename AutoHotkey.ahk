@@ -224,6 +224,7 @@ MakeNiceURL()
 	StringReplace, NiceUrl, NiceUrl, `{, , All
 	StringReplace, NiceUrl, NiceUrl, `}, , All
 	StringReplace, NiceUrl, NiceUrl, ', , All
+	StringReplace, NiceUrl, NiceUrl, *, , All
 	StringReplace, NiceUrl, NiceUrl, `", , All
 	StringReplace, NiceUrl, NiceUrl,  %A_Space%, -, All
 	While InStr(NiceUrl, "--") <> 0
