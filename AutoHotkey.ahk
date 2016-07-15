@@ -185,19 +185,21 @@ return
 ;Hotstrings (text expansion)
 :*:gmh::george.murga@honeywell.com
 :*:gmg::george.murga@gmail.com
-::urlenc::
+:*:urlenc::
 	oldClip := Clipboard
 	Clipboard := MakeNiceURL()
     SendInput, ^v
 	ClipWait
-	Clipboard := oldClip
+	Clipboard = %oldClip%
+	ClipWait
 return
-::urldec::
+:*:urldec::
 	oldClip := Clipboard
 	Clipboard := MakeTitleFromNiceURL()
     SendInput, ^v
 	ClipWait
-	Clipboard := oldClip
+	Clipboard = %oldClip%
+	ClipWait
 return
 
 MakeNiceURL()
