@@ -186,18 +186,26 @@ return
 :*:gmh::george.murga@honeywell.com
 :*:gmg::george.murga@gmail.com
 ::urlenc::
+	ClipWait
 	oldClip := Clipboard
+	ClipWait
 	Clipboard := MakeNiceURL()
+	ClipWait
     SendInput, ^v
 	ClipWait
 	Clipboard := oldClip
+	ClipWait
 return
 ::urldec::
+	ClipWait
 	oldClip := Clipboard
+	ClipWait
 	Clipboard := MakeTitleFromNiceURL()
+	ClipWait
     SendInput, ^v
 	ClipWait
 	Clipboard := oldClip
+	ClipWait
 return
 
 MakeNiceURL()
