@@ -1,3 +1,5 @@
+; File D:\AutoHotKey Scripts\AutoHotkey.ahk
+
 ; IMPORTANT INFO ABOUT GETTING STARTED: Lines that start with a
 ; semicolon, such as this one, are comments.  They are not executed.
 
@@ -248,3 +250,13 @@ MakeTitleFromNiceURL()
 	StringUpper, NiceUrl, NiceUrl, T
 	return NiceUrl
 }
+
+;Insert date
+:R*?:ddd::
+	FormatTime, CurrentDateTime,, yyyy/MM/dd
+	SendInput %CurrentDateTime%
+	Send,{Shift down}{Left 10}{Shift up}
+	Send, ^b
+	Send, {Right 1}
+	Send, ^b
+return
