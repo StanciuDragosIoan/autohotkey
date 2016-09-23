@@ -95,7 +95,7 @@ if (MonitorCount = 1){
 
 IfWinNotExist, Archive ahk_class rctrl_renwnd32
 {
-	Run, "C:\Program Files\Microsoft Office 15\root\office15\OUTLOOK.EXE"  /select Outlook:\\NewArchive\Archive
+	Run, "C:\Program Files\Microsoft Office 15\root\office15\OUTLOOK.EXE"  /select Outlook:\\ContentAdmin2016\Archive
 	WinWait, Archive ahk_class rctrl_renwnd32
 }
 WinActivate, Archive ahk_class rctrl_renwnd32
@@ -188,21 +188,24 @@ return
 :*:gmh::george.murga@honeywell.com
 :*:gmg::george.murga@gmail.com
 :*:urlenc::
+	delay := 500	
 	ClipWait
 	oldClip := Clipboard
-	Clipboard := MakeNiceURL()
+	Clipboard := Format("{:L}", MakeNiceURL())
 	ClipWait
     SendInput, ^v
-	ClipWait
+	Sleep, %delay%
 	Clipboard = %oldClip%
 	ClipWait
 return
 :*:urldec::
+	delay := 500
+	ClipWait
 	oldClip := Clipboard
-	Clipboard := MakeTitleFromNiceURL()
+	Clipboard := Format("{:T}", MakeTitleFromNiceURL())
 	ClipWait
     SendInput, ^v
-	ClipWait
+	Sleep, %delay%
 	Clipboard = %oldClip%
 	ClipWait
 return
@@ -210,6 +213,7 @@ return
 MakeNiceURL()
 {
 	NiceUrl := Trim(Clipboard)
+	;MsgBox %NiceUrl%
 	While InStr(NiceUrl, "  ") <> 0
 	{
 		StringReplace, NiceUrl, NiceUrl, %A_Space%%A_Space%, %A_Space%, All
@@ -236,6 +240,7 @@ MakeNiceURL()
 	{
 		StringReplace, NiceUrl, NiceUrl, --, -, All
 	}
+	;MsgBox %NiceUrl%
 	return NiceUrl
 }
 
